@@ -34,14 +34,18 @@ class PostForm
                     Group::make([
                         TextInput::make('title')
                             ->required()
-                            ->rules('min:5'),
+                            ->rules(['required, min:3, max:10']),
                         TextInput::make('slug')
-                            ->required()
-                            ->unique(ignoreRecord: true),
+                            ->rules('required')
+                            ->unique()
+                            ->validationMessages([
+                                'unique' => 'Slug harus unik dan tidak boleh sama.'
+                            ]),
                         Select::make("category_id")
                             ->relationship("category", "name")
                             ->preload()
-                            ->searchable(),
+                            ->searchable()
+                            ->required(),
                         ColorPicker::make("color"),
                     ])->columns(2),
 
@@ -56,8 +60,10 @@ class PostForm
                     ->icon('heroicon-o-photo')
                     ->schema([ 
                         FileUpload::make('image') 
+                            ->required()
                             ->disk('public') 
-                            ->directory('posts'), 
+                            ->directory('posts') 
+                            ->required(),
                 ]),
 
                 //section 3 - meta
